@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HandFlow • Touchless Hand Gesture & Vision Shortcut Controller</title>
+  <meta name="description" content="Control your computer with your hands. Touchless scrolling, swiping, and custom shortcut mapping with input cooldown safety.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="cyber-theme">
+  <div id="app" class="app-shell">
+    
+    <!-- Top Navigation & Status Bar -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="logo-orb">
+          <div class="iris"></div>
+          <div class="pupil"></div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">HAND<span>FLOW</span></div>
+          <div class="brand-tag">Touchless Vision Gesture Controller</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector Switcher -->
+      <div class="mode-selector-container">
+        <button class="mode-btn active" id="mode-hands-btn" data-mode="hands">🖐️ Hand Gestures</button>
+        <button class="mode-btn" id="mode-eyes-btn" data-mode="eyes">👁️ Eye Blinks</button>
+      </div>
+
+      <div class="header-telemetry">
+        <div class="status-pill" id="target-status-pill">
+          <span class="status-dot warning" id="target-dot"></span>
+          <span id="target-text">SEARCHING HAND</span>
+        </div>
+        <div class="status-pill" id="air-mouse-pill">
+          <span class="status-dot" id="air-mouse-dot"></span>
+          <span id="air-mouse-text">AIR MOUSE: OFF</span>
+        </div>
+        <div class="status-pill">
+          <span class="pill-label">FPS</span>
+          <span class="pill-val" id="fps-val">0.0</span>
+        </div>
+        <div class="status-pill">
+          <span class="pill-label">LATENCY</span>
+          <span class="pill-val" id="latency-val">0ms</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="blur-face-btn" class="btn btn-icon" title="Toggle Face Blur (Anonymity Shield)">
+          <span id="blur-icon">👤</span>
+        </button>
+        <button id="audio-toggle-btn" class="btn btn-icon" title="Toggle audio feedback chimes">
+          <span id="audio-icon">🔊</span>
+        </button>
+
+        <div class="master-switch-container">
+          <label class="switch" title="Master toggle gesture processing">
+            <input type="checkbox" id="master-toggle" checked>
+            <span class="slider round"></span>
+          </label>
+          <span class="switch-label" id="master-status-label">ACTIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Application Grid -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Column: Camera Viewport, Gauges, & Waveform -->
+      <section class="viewport-card glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon neon" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            Live Optical Viewport
+          </div>
+          <div class="viewport-controls">
+            <select id="camera-select" class="dropdown-select" title="Select Video Device">
+              <option value="0">Camera 0</option>
+            </select>
+            <button id="toggle-mesh-btn" class="btn btn-xs active" title="Toggle AR Skeleton / Mesh">AR Skeleton</button>
+          </div>
+        </div>
+
+        <!-- Camera Frame Display -->
+        <div class="video-container" id="video-wrapper">
+          <img id="video-stream" alt="Live Camera Feed" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480' fill='%2312131a'><rect width='640' height='480'/><text x='50%25' y='50%25' fill='%23555' font-size='18' text-anchor='middle'>Initializing Camera Feed...</text></svg>">
+          <div class="hud-corners">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+          </div>
+          <div class="hud-center-crosshair"></div>
+          
+          <!-- State Pill Overlay -->
+          <div class="state-overlay-badge" id="engine-state-badge">
+            STATE: <span id="engine-state-text">IDLE</span>
+          </div>
+
+          <div class="trigger-flash" id="trigger-flash-fx"></div>
+        </div>
+
+        <!-- Dual Telemetry Gauges (Hand Mode vs Eye Mode) -->
+        <div class="telemetry-gauges" id="hand-gauges">
+          <div class="gauge-group">
+            <div class="gauge-meta">
+              <span class="gauge-name" id="left-gauge-label">HAND ACTIVITY</span>
+              <span class="gauge-val" id="pinch-val-pct">0%</span>
+            </div>
+            <div class="gauge-track">
+              <div class="gauge-fill left" id="pinch-gauge-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="gauge-group">
+            <div class="gauge-meta">
+              <span class="gauge-name" id="right-gauge-label">DETECTED POSE</span>
+              <span class="gauge-val" id="pose-val-text">None</span>
+            </div>
+            <div class="gauge-track">
+              <div class="gauge-fill right" id="pose-gauge-bar" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rolling Waveform Chart -->
+        <div class="chart-container">
+          <div class="chart-header">
+            <span class="chart-title" id="chart-title-text">Real-Time Hand Motion & Activity Waveform</span>
+            <div class="chart-legend" id="chart-legend-container">
+              <span class="legend-item"><span class="dot left-eye-dot"></span>Activity</span>
+              <span class="legend-item"><span class="dot right-eye-dot"></span>Motion Y</span>
+            </div>
+          </div>
+          <canvas id="waveform-canvas" width="600" height="90"></canvas>
+        </div>
+      </section>
+
+      <!-- Right Column: Shortcut Mapper, Presets & Settings -->
+      <section class="config-card glass-panel">
+        
+        <!-- Preset Profiles Header -->
+        <div class="presets-bar">
+          <span class="presets-label">QUICK PRESETS:</span>
+          <div class="preset-buttons" id="presets-button-container">
+            <button class="btn btn-pill active" data-preset="browsing">🌐 Browsing & Scroll</button>
+            <button class="btn btn-pill" data-preset="media">🎵 Media & Volume</button>
+            <button class="btn btn-pill" data-preset="presentation">📽️ Presentation Slides</button>
+          </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="mappings-tab">Gesture Actions</button>
+          <button class="tab-btn" data-tab="sensitivity-tab">Motion Sensitivity</button>
+          <button class="tab-btn" data-tab="history-tab">Activity Feed (<span id="history-count">0</span>)</button>
+        </div>
+
+        <!-- Tab 1: Shortcut Mappings Table -->
+        <div class="tab-pane active" id="mappings-tab">
+          <div class="mapping-list" id="mapping-list-container">
+            <!-- Populated dynamically by JS -->
+          </div>
+          <div class="mapping-actions">
+            <button id="save-mappings-btn" class="btn btn-primary">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>
+              Save Changes
+            </button>
+            <span class="save-status" id="save-status-msg"></span>
+          </div>
+        </div>
+
+        <!-- Tab 2: Sensitivity Tuning -->
+        <div class="tab-pane" id="sensitivity-tab">
+          
+          <!-- Hand Mode Sensitivity -->
+          <div class="tuning-grid" id="hand-tuning-grid">
+            
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-scroll-deadzone">Scroll Motion Deadzone</label>
+                <span class="tuning-val" id="sens-scroll-deadzone-val">0.038</span>
+              </div>
+              <input type="range" id="sens-scroll-deadzone" min="0.015" max="0.090" step="0.002" value="0.038" class="cyber-slider">
+              <div class="field-hint">Minimum hand movement required to scroll. Higher prevents accidental jitter.</div>
+            </div>
+
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-scroll-speed">Scroll Wheel Steps (Speed)</label>
+                <span class="tuning-val" id="sens-scroll-speed-val">2</span>
+              </div>
+              <input type="range" id="sens-scroll-speed" min="1" max="5" step="1" value="2" class="cyber-slider">
+              <div class="field-hint">How many lines/steps to scroll per movement pulse.</div>
+            </div>
+
+            <div class="tuning-field checkbox-field">
+              <label class="checkbox-label" for="sens-scroll-inverted">
+                <input type="checkbox" id="sens-scroll-inverted">
+                <span>Invert Scroll Direction (Natural Scrolling)</span>
+              </label>
+            </div>
+
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-input-delay">Global Input Delay (Cooldown)</label>
+                <span class="tuning-val" id="sens-input-delay-val">250ms</span>
+              </div>
+              <input type="range" id="sens-input-delay" min="100" max="2000" step="25" value="250" class="cyber-slider">
+              <div class="field-hint">Cooldown delay between consecutive inputs (250ms default).</div>
+            </div>
+
+            <div class="tuning-field checkbox-field">
+              <label class="checkbox-label" for="sens-air-mouse-enabled">
+                <input type="checkbox" id="sens-air-mouse-enabled" checked>
+                <span>Enable Fingertip Air Mouse</span>
+              </label>
+            </div>
+
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-air-mouse-idle">Air Mouse Idle Activation Time</label>
+                <span class="tuning-val" id="sens-air-mouse-idle-val">2.0s</span>
+              </div>
+              <input type="range" id="sens-air-mouse-idle" min="1.0" max="4.0" step="0.25" value="2.0" class="cyber-slider">
+              <div class="field-hint">Hold index finger steady for this duration to engage mouse cursor control.</div>
+            </div>
+
+            <div class="tuning-field checkbox-field">
+              <label class="checkbox-label" for="sens-dwell-click-enabled">
+                <input type="checkbox" id="sens-dwell-click-enabled">
+                <span>Enable Hover Dwell Auto-Click (Fingertip bend click is always active)</span>
+              </label>
+            </div>
+
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-dwell-click">Dwell Click Duration (Hover to Click)</label>
+                <span class="tuning-val" id="sens-dwell-click-val">700ms</span>
+              </div>
+              <input type="range" id="sens-dwell-click" min="400" max="1500" step="50" value="700" class="cyber-slider">
+              <div class="field-hint">Hover cursor steady over an element to auto-click without physical touch.</div>
+            </div>
+
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-swipe-thresh">Horizontal Swipe Sensitivity</label>
+                <span class="tuning-val" id="sens-swipe-thresh-val">0.45</span>
+              </div>
+              <input type="range" id="sens-swipe-thresh" min="0.20" max="1.00" step="0.05" value="0.45" class="cyber-slider">
+              <div class="field-hint">Speed required for swipe left/right. 0.45 provides responsive, snappy desktop switching.</div>
+            </div>
+
+            <div class="tuning-field">
+              <div class="tuning-label-row">
+                <label for="sens-pose-hold">Static Pose Hold Duration (ms)</label>
+                <span class="tuning-val" id="sens-pose-hold-val">350ms</span>
+              </div>
+              <input type="range" id="sens-pose-hold" min="150" max="700" step="25" value="350" class="cyber-slider">
+              <div class="field-hint">Time pose (e.g. Fist, Palm) must be held steady before firing.</div>
+            </div>
+
+          </div>
+
+          <div class="tuning-actions">
+            <button id="save-tuning-btn" class="btn btn-primary">Apply Tuning</button>
+            <button id="reset-tuning-btn" class="btn btn-secondary">Reset to Defaults</button>
+          </div>
+        </div>
+
+        <!-- Tab 3: Activity & Event Log -->
+        <div class="tab-pane" id="history-tab">
+          <div class="activity-feed" id="activity-feed-list">
+            <div class="feed-empty">No gestures detected yet. Wave your hand in front of the camera!</div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Hotkey Recorder Modal -->
+    <div class="modal-backdrop" id="recorder-modal" style="display: none;">
+      <div class="modal-dialog glass-panel small">
+        <div class="modal-header">
+          <div class="modal-title">Record Shortcut</div>
+          <button class="modal-close-btn" id="recorder-close-btn">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+          <p>Press the key combination on your keyboard now...</p>
+          <div class="hotkey-display" id="recorder-preview">Listening...</div>
+          <div class="recorder-actions">
+            <button id="recorder-cancel-btn" class="btn btn-secondary">Cancel</button>
+            <button id="recorder-save-btn" class="btn btn-primary">Assign Key</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/js/audio.js"></script>
+  <script src="/static/js/chart.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

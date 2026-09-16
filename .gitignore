@@ -1,0 +1,29 @@
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Python cache and byte code
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing and coverage caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and agent metadata
+.agents/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log

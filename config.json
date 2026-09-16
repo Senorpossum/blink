@@ -1,0 +1,206 @@
+{
+  "mode": "hands",
+  "active": true,
+  "camera_index": 0,
+  "camera_fps": 30,
+  "camera_width": 640,
+  "camera_height": 480,
+  "audio_feedback": false,
+  "audio_volume": 0.5,
+  "draw_mesh": false,
+  "blur_face": false,
+  "sensitivity": {
+    "blink_threshold": 0.4,
+    "wink_open_threshold": 0.2,
+    "min_blink_duration_ms": 70,
+    "max_normal_blink_ms": 320,
+    "long_blink_duration_ms": 500,
+    "double_blink_window_ms": 480,
+    "triple_blink_window_ms": 750,
+    "cooldown_ms": 600
+  },
+  "hand_sensitivity": {
+    "scroll_deadzone": 0.039,
+    "scroll_speed": 5,
+    "scroll_inverted": false,
+    "input_delay_ms": 100,
+    "swipe_velocity_thresh": 0.45,
+    "swipe_min_dist": 0.08,
+    "pose_hold_ms": 350,
+    "air_mouse_enabled": true,
+    "air_mouse_idle_sec": 2.0,
+    "dwell_click_ms": 700,
+    "dwell_click_enabled": false,
+    "scroll_interval_ms": 250,
+    "zoom_delta_thresh": 0.07,
+    "zoom_interval_ms": 240,
+    "swipe_cooldown_ms": 250,
+    "pose_cooldown_ms": 250
+  },
+  "mappings": {
+    "DOUBLE_BLINK": {
+      "type": "hotkey",
+      "value": "ctrl+t",
+      "description": "New Tab",
+      "enabled": true
+    },
+    "TRIPLE_BLINK": {
+      "type": "hotkey",
+      "value": "ctrl+r",
+      "description": "Refresh Page",
+      "enabled": true
+    },
+    "LONG_BLINK": {
+      "type": "hotkey",
+      "value": "ctrl+w",
+      "description": "Close Tab",
+      "enabled": true
+    },
+    "LEFT_WINK": {
+      "type": "hotkey",
+      "value": "ctrl+Shift+Tab",
+      "description": "Previous Tab",
+      "enabled": true
+    },
+    "RIGHT_WINK": {
+      "type": "hotkey",
+      "value": "ctrl+Tab",
+      "description": "Next Tab",
+      "enabled": true
+    },
+    "LONG_LEFT_WINK": {
+      "type": "hotkey",
+      "value": "ctrl+w",
+      "description": "Close Active Tab",
+      "enabled": false
+    },
+    "LONG_RIGHT_WINK": {
+      "type": "hotkey",
+      "value": "ctrl+t",
+      "description": "Open New Tab",
+      "enabled": false
+    }
+  },
+  "hand_mappings": {
+    "SCROLL_UP": {
+      "type": "scroll_up",
+      "value": "3",
+      "description": "Scroll Up",
+      "enabled": true
+    },
+    "SCROLL_DOWN": {
+      "type": "scroll_down",
+      "value": "3",
+      "description": "Scroll Down",
+      "enabled": true
+    },
+    "SWIPE_LEFT": {
+      "type": "hotkey",
+      "value": "ctrl+Tab",
+      "description": "Next Tab",
+      "enabled": true
+    },
+    "SWIPE_RIGHT": {
+      "type": "hotkey",
+      "value": "ctrl+Shift+Tab",
+      "description": "Previous Tab",
+      "enabled": true
+    },
+    "OPEN_PALM": {
+      "type": "hotkey",
+      "value": "space",
+      "description": "Play / Pause",
+      "enabled": false
+    },
+    "VICTORY": {
+      "type": "hotkey",
+      "value": "ctrl+t",
+      "description": "New Tab",
+      "enabled": true
+    },
+    "THUMB_UP": {
+      "type": "hotkey",
+      "value": "XF86AudioRaiseVolume",
+      "description": "Volume Up",
+      "enabled": true
+    },
+    "THUMB_DOWN": {
+      "type": "hotkey",
+      "value": "XF86AudioLowerVolume",
+      "description": "Volume Down",
+      "enabled": true
+    },
+    "AIR_CLICK": {
+      "type": "command",
+      "value": "gnome-terminal",
+      "description": "Open Terminal",
+      "enabled": true
+    },
+    "DOUBLE_CLAP": {
+      "type": "command",
+      "value": "xdg-open https://google.com",
+      "description": "xdg-open https://google.com",
+      "enabled": true
+    },
+    "SHH_QUIET": {
+      "type": "hotkey",
+      "value": "XF86AudioMute",
+      "description": "Finger to Lips: Toggle Mute",
+      "enabled": true
+    },
+    "PALM_TO_FIST": {
+      "type": "minimize_window",
+      "value": "super+h",
+      "description": "Close Window",
+      "enabled": true
+    },
+    "FIST_TO_PALM": {
+      "type": "restore_window",
+      "value": "alt+Tab",
+      "description": "Reopen Window",
+      "enabled": true
+    },
+    "HOLO_EXPAND": {
+      "type": "resize_window_expand",
+      "value": "super+Up",
+      "description": "Maximize Window",
+      "enabled": true
+    },
+    "HOLO_SHRINK": {
+      "type": "resize_window_shrink",
+      "value": "super+Down",
+      "description": "Restore Window",
+      "enabled": true
+    },
+    "DUAL_SWIPE_LEFT": {
+      "type": "switch_desktop_left",
+      "value": "ctrl+alt+Left",
+      "description": "Switch Desktop Left",
+      "enabled": true
+    },
+    "DUAL_SWIPE_RIGHT": {
+      "type": "switch_desktop_right",
+      "value": "ctrl+alt+Right",
+      "description": "Switch Desktop Right",
+      "enabled": true
+    },
+    "REPULSOR_PUSH": {
+      "type": "show_desktop",
+      "value": "super+d",
+      "description": "Show Desktop",
+      "enabled": true
+    },
+    "CLOSED_FIST": {
+      "type": "hotkey",
+      "value": "",
+      "description": "",
+      "enabled": false
+    },
+    "POINTING_UP": {
+      "type": "hotkey",
+      "value": "",
+      "description": "",
+      "enabled": false
+    }
+  }
+}
